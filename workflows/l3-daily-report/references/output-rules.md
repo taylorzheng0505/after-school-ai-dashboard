@@ -23,7 +23,8 @@ Accept natural language, screenshots, photos, HTML dashboards and mixed input. D
 - OCR can assist extraction, labeling and indexing, but the displayed evidence should remain the original image.
 - When evidence is insufficient, say “暂无法判断/需继续观察” rather than inventing a cause.
 - Never reuse mock values from the bundled template.
-- When a confirmed wrong question comes from a larger page, per-question cropping is mandatory; follow `references/cropping.md`.
+- If a standardized homework-grading HTML already contains an embedded per-question crop, reuse that crop directly; do not crop the same question again.
+- When an uncovered confirmed wrong question comes from a larger page, per-question cropping is mandatory; follow `references/cropping.md`.
 
 ## Output
 - Create one self-contained parent-facing HTML file.
@@ -31,6 +32,7 @@ Accept natural language, screenshots, photos, HTML dashboards and mixed input. D
 - Preserve the approved structure, CSS language, visual shell and section order unless the user explicitly asks to redesign the template.
 - Replace all mock/sample content with current student data.
 - Expand repeated rows/cards as needed, but do not invent a new page style.
+- Wrong-question evidence cards use the locked two-column desktop grid: two cards per row; a single remaining card stays in the left column. On narrow/mobile view, the template collapses to one column.
 - If the style drifts, regenerate from the bundled template instead of improvising a new layout.
 - Keep the output readable on desktop and mobile.
 - Return the generated HTML as the primary deliverable.
@@ -44,7 +46,8 @@ Accept natural language, screenshots, photos, HTML dashboards and mixed input. D
 - Before delivery, run `python scripts/validate_visual.py assets/template-reference.html <output.html>` and fix any failure.
 
 ## Wrong-question image safety
-- If a full worksheet/page contains a confirmed wrong question, create a separate per-question evidence crop before HTML generation. This is mandatory, not optional.
+- First preference: reuse embedded per-question crops from a complete standardized homework-grading report. Do not re-crop covered homework.
+- For uncovered materials, if a full worksheet/page contains a confirmed wrong question, create a separate per-question evidence crop before HTML generation. This remains mandatory, not optional.
 - Prefer extra context over truncation. A slightly loose crop is acceptable; a crop that cuts off the target question is not.
 - Whole-page embedding is exception-only after conservative crop failure; it must not be the normal substitute for a per-question crop.
 - Never use fixed-height CSS, `max-height`, `object-fit:cover`, or overflow clipping for evidence images.

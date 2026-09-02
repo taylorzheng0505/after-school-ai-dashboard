@@ -58,3 +58,11 @@ Accept natural language, screenshots, photos, HTML dashboards and mixed input. D
 
 ## Weekly/monthly evidence rule
 Weekly and monthly workflows must reuse wrong-question evidence already recorded in daily reports. They must not rescan raw worksheets, scan the standalone wrong-question library, or recrop original homework/test pages.
+
+
+## 标准作业批改报告复用
+- 当日报输入中已有标准作业批改HTML，日报必须优先读取其中的结构化批改数据与逐题证据裁图。
+- 已被标准批改报告覆盖的作业，不得在日报阶段重复批改、重复错题分析或重复裁剪。
+- L2只消费客观统计、错题编号/来源、裁图和订正状态；L3可进一步消费题型、考查能力、错误表现与错因。
+- 没有标准批改报告的材料继续走日报原有裁图/记录流程。
+- 日报错题卡桌面端采用固定两列网格；单个卡片保持左列，不拉伸整行。

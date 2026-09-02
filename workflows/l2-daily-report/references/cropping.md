@@ -1,6 +1,6 @@
 # Wrong-question image cropping protocol
 
-Cropping is a **mandatory production step** for daily reports whenever the source evidence is a full worksheet/page and a wrong question has been identified. The final daily HTML must not use the full worksheet page as the normal substitute for a per-question evidence crop.
+Cropping is a **mandatory production step for uncovered materials** whenever the source evidence is a full worksheet/page and a wrong question has been identified. If a complete standardized homework-grading HTML already contains the per-question crop, reuse that embedded crop directly and do not crop the same question again. The final daily HTML must not use the full worksheet page as the normal substitute for a per-question evidence crop.
 
 The priority is completeness, not tightness. A crop that contains extra whitespace or a small part of the neighboring question is acceptable; a crop that cuts off any part of the target question is not.
 

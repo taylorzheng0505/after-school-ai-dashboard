@@ -26,9 +26,3 @@ Whole-page embedding is **not an acceptable normal fallback**. Use the original 
 
 ## HTML rule
 Display the resulting crop at natural aspect ratio. Never use fixed-height CSS, `max-height`, `object-fit: cover`, or overflow clipping for evidence images.
-
-
-## 批改阶段前移规则
-- 对经过 `homework-grading-report` 的整页作业，逐题错题裁剪在批改阶段完成并嵌入批改HTML。
-- 日报直接复用这些裁图，不再次裁剪。
-- 日报只对未经过标准批改报告的材料执行自主裁剪，例如单词听写、临时小测、单题拍照等。

@@ -12,6 +12,12 @@ The bundled HTML asset is not a loose design example. It is the institution's fi
 - If a section has no current data, keep the institutional structure and use the report-specific missing-data rule; do not redesign the section.
 - Do not add decorative gradients, icons, charts, fixed-height image frames, masonry layouts, new card shells, or alternate fonts.
 
+## Wrong-question grid contract
+- On desktop, wrong-question evidence cards must use the template's fixed two-column grid: two questions per row.
+- If the row has only one question, leave the right grid slot empty; do not stretch the card to full width.
+- On mobile/narrow screens, use the template's built-in one-column responsive fallback.
+- Do not replace this with masonry, variable-width cards, or one-question-per-full-row desktop layout.
+
 ## Image display contract
 - Evidence images must render with `width:100%` and automatic height.
 - Never use `height:<fixed value>`, `max-height`, `object-fit:cover`, or a clipping wrapper for wrong-question evidence.
