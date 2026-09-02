@@ -1,0 +1,22 @@
+# Never commit real student data
+students/
+student-data/
+reports/
+uploads/
+wrong-questions/
+student-files/
+local-data/
+
+# Local/private files
+.env
+.env.*
+*.local.*
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+
+# Generated outputs
+output/
+outputs/
+dist-local/

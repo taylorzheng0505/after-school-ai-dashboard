@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5个看板 Skill 信息采集与交互规范 v1.3</title>
+<style>
+:root{
+  --bg:#f5f7fb;--card:#fff;--text:#202534;--muted:#6e7687;--line:#e4e8f0;
+  --pri:#6273e5;--ps:#eef1ff;--green:#3f8064;--gs:#edf8f3;
+  --amber:#9a6a28;--as:#fff7e8;--red:#ad5151;--rs:#fff0f0;
+  --blue:#456ea9;--bs:#eef4ff;--violet:#7256b5;--vs:#f3efff;
+  --shadow:0 7px 24px rgba(37,44,67,.055)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",Arial,sans-serif;line-height:1.72}
+.wrap{max-width:1180px;margin:auto}
+header{padding:44px 22px 34px;background:linear-gradient(135deg,#5868dd,#7b86eb);color:#fff}
+h1{margin:0;font-size:30px;line-height:1.3}.sub{opacity:.94;margin-top:9px;font-size:14px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.pill{font-size:12px;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25)}
+nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+nav .wrap{display:flex;gap:5px;overflow:auto;padding:9px 15px}nav a{text-decoration:none;color:#596071;font-size:13px;padding:6px 10px;white-space:nowrap;border-radius:999px}
+nav a:hover{background:var(--ps);color:var(--pri)}
+main{padding:30px 18px 58px}section{margin-bottom:30px}
+h2{font-size:22px;margin:0 0 6px}h3{font-size:17px;margin:0 0 8px}.desc{color:var(--muted);font-size:13px;margin:0 0 14px}
+.card,.rule,.prompt,.flowbox{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.card{padding:18px}.rule{padding:14px 15px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.callout{padding:14px 16px;border-radius:10px;border-left:4px solid var(--pri);background:var(--ps);font-size:13px}
+.callout.green{background:var(--gs);border-left-color:var(--green)}
+.callout.amber{background:var(--as);border-left-color:var(--amber)}
+.callout.red{background:var(--rs);border-left-color:var(--red)}
+.callout.blue{background:var(--bs);border-left-color:var(--blue)}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top;text-align:left}
+th{background:#f0f2fa;font-weight:700}tr:last-child td{border-bottom:none}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+.req{background:var(--rs);color:var(--red)}.opt{background:#f1f2f5;color:#676d79}.auto{background:var(--bs);color:var(--blue)}.reuse{background:var(--gs);color:var(--green)}.verify{background:var(--as);color:var(--amber)}
+.status{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.status .s{padding:14px;border-radius:12px;border:1px solid var(--line);background:#fff}
+.s.green{border-left:4px solid var(--green)}.s.amber{border-left:4px solid var(--amber)}.s.red{border-left:4px solid var(--red)}
+.s b{display:block;margin-bottom:4px}
+.prompt{overflow:hidden}.prompt-head{padding:10px 14px;background:#f0f2fa;font-size:12px;font-weight:800;color:#596071}
+.prompt-body{padding:15px 16px;font-size:13px;white-space:pre-wrap}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.flow span{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:12px}.flow i{font-style:normal;color:#9ca2ae}
+.check{font-weight:800;color:var(--green)}.bad{font-weight:800;color:var(--red)}
+ul{margin:6px 0 0 18px;padding:0}li{margin:4px 0}
+.num{display:inline-flex;width:25px;height:25px;align-items:center;justify-content:center;border-radius:8px;background:var(--ps);color:var(--pri);font-weight:800;margin-right:6px;font-size:12px}
+.mini{font-size:12px;color:var(--muted)}.kbd{display:inline-block;padding:2px 7px;border:1px solid var(--line);background:#fafbfc;border-radius:6px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:34px}
+@media(max-width:820px){.grid2,.grid3,.status{grid-template-columns:1fr}h1{font-size:24px}}
+@media print{nav{display:none}body{background:#fff}.card,.rule,.prompt,.flowbox{box-shadow:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>5个看板 Skill 信息采集与交互规范 v1.3</h1>
+  <div class="sub">课后托管 L2 / L3｜一线督导调用 AI 生成日、周、月看板的统一交互协议</div>
+  <div class="meta">
+    <span class="pill">版本 v1.3</span>
+    <span class="pill">更新：2026-09-02</span>
+    <span class="pill">适用：5个看板 Skill</span>
+    <span class="pill">上位规则：L2/L3 Source of Truth v1.0</span>
+  </div>
+</div></header>
+
+<nav><div class="wrap">
+  <a href="#purpose">定位</a><a href="#protocol">统一交互</a><a href="#sources">数据继承</a>
+  <a href="#l2day">L2日报</a><a href="#l2week">L2周报</a>
+  <a href="#l3day">L3日报</a><a href="#l3week">L3周报</a><a href="#l3month">L3月报</a>
+  <a href="#validation">校验规则</a><a href="#quick">一线速查</a>
+</div></nav>
+
+<main class="wrap">
+
+<section id="purpose">
+  <h2>01｜文档定位</h2>
+  <p class="desc">本文件不重新定义产品内容，而是规定 AI 在真实调用时“怎样向督导索取信息、怎样判断信息是否足够、怎样追问、怎样继承历史数据”。</p>
+  <div class="grid3">
+    <div class="rule"><b>目标 1｜一轮尽量收齐</b>AI第一次回复就列清本次全部资料需求，允许督导用自然语言、截图、照片、HTML混合提交。</div>
+    <div class="rule"><b>目标 2｜最多一次补问</b>AI先审核完整性；只有关键缺项才进行一次定向追问，不逐项“审讯式”提问。</div>
+    <div class="rule"><b>目标 3｜越往后越少手填</b>周报只汇总目标周日报；月报只汇总目标月日报并补月测/路线；日报仅定向读取最近一份日报以追踪长期任务。</div>
+  </div>
+  <div class="callout red" style="margin-top:14px">
+    <b>硬原则：</b>AI不得为了“把报告写完整”而补造事实。没有提供、无法从前序看板推导、证据不足的信息，必须标记为“未提供 / 暂无法判断 / 数据不足”，或在生成前进行关键追问。
+  </div>
+</section>
+
+<section id="protocol">
+  <h2>02｜五个 Skill 共用的统一交互流程</h2>
+  <div class="flow">
+    <span>① 识别看板类型</span><i>→</i><span>② 读取当前已有资料</span><i>→</i>
+    <span>③ 一次性索取缺失资料</span><i>→</i><span>④ 自动解析/计算</span><i>→</i>
+    <span>⑤ 完整性审核</span><i>→</i><span>⑥ 最多一次补问</span><i>→</i><span>⑦ 生成看板</span>
+  </div>
+
+  <h3 style="margin-top:18px">统一状态判断</h3>
+  <div class="status">
+    <div class="s green"><b>🟢 信息完整</b>关键数据齐全，直接生成；非关键字段也有充分信息。</div>
+    <div class="s amber"><b>🟡 可生成</b>存在非关键缺项，但不会影响报告真实性；用“未提供 / 暂无记录”处理，不阻断生成。</div>
+    <div class="s red"><b>🔴 暂不生成</b>缺少会导致报告失真、错配或无法核验的关键数据；只追问这些缺项。</div>
+  </div>
+
+  <div class="callout blue" style="margin-top:14px">
+    <b>交互体验要求：</b>AI列清单是为了告诉督导“需要什么”，不是强迫督导按固定表格填写。督导可以直接用自然语言回复，AI负责拆解与结构化。
+  </div>
+</section>
+
+<section id="sources">
+  <h2>03｜数据继承与信息来源优先级</h2>
+  <table>
+    <thead><tr><th>优先级</th><th>信息来源</th><th>使用规则</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>本次督导明确提供的事实</b></td><td>优先级最高；如与旧报告冲突，以本次明确更新为准。</td></tr>
+      <tr><td>2</td><td><b>本周期已生成的前序看板</b></td><td>日报仅读取最近一份历史日报的未完成长期任务；周报读取目标周日报；月报读取目标月日报。</td></tr>
+      <tr><td>3</td><td><b>学生固定档案</b></td><td>姓名、年级、路线等稳定信息可复用；发生变化时必须更新。</td></tr>
+      <tr><td>4</td><td><b>原始图片 / 测试材料 / 教师反馈</b></td><td>作为错题、月测、专项辅导等事实证据。</td></tr>
+      <tr><td>禁止</td><td><b>AI常识性猜测</b></td><td>不得用“通常”“看起来”“应该”替代缺失的学生事实。</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout green" style="margin-top:14px">
+    <b>不重复索取：</b>如果当前对话/工作区中已经有可靠的学生姓名、年级、路线、前序日报/周报，AI应直接复用，不再机械追问。
+  </div>
+</section>
+
+<section id="l2day">
+  <h2>04｜Skill 1：L2 日看板｜信息采集规范</h2>
+  <p class="desc">L2日报是后续周报的数据源，因此要求“事实完整、任务清楚、错题有原图、行为可观察”，但不要求督导做学术诊断。</p>
+
+  <table>
+    <thead><tr><th>信息组</th><th>督导需提供</th><th>AI可自动处理</th><th>完整性级别</th></tr></thead>
+    <tbody>
+      <tr><td>学生与日期</td><td>姓名、年级、日期、当前路线（传统/国际/转轨）</td><td>若已有学生档案可继承</td><td><span class="tag req">关键</span></td></tr>
+      <tr><td>时间</td><td>到校、离校；有效学习时长若现场已有记录可直接给</td><td>可根据可靠的起止/休息记录计算；不能只用“离校-到校”默认等于有效学习</td><td><span class="tag req">关键</span></td></tr>
+      <tr><td>今日任务</td><td>科目、具体任务、当天完成情况；长期任务写当天推进；顺延写原因</td><td>把自然语言拆成Checklist；不生成“总任务完成率”误导长期任务</td><td><span class="tag req">关键</span></td></tr>
+      <tr><td>客观核对</td><td>可核对任务的总题数/正确数，或直接给批改结果</td><td>自动计算正确率；开放题/Project不强算正确率</td><td><span class="tag verify">有则必填</span></td></tr>
+      <tr><td>错题/听写</td><td>原始图片；来源/题号；是否已答疑、是否已订正</td><td>可裁切整理图片；不得OCR重绘代替原图</td><td><span class="tag req">有错则关键</span></td></tr>
+      <tr><td>学习过程与习惯</td><td>1–3条可观察行为</td><td>归入自主启动、专注/节奏、任务管理、求助方式、复盘等维度</td><td><span class="tag req">必填</span></td></tr>
+      <tr><td>其他异常</td><td>迟到、早退、材料缺失、情绪/身体状态、特殊安排等；无则写“无”</td><td>整理为家长可见备注</td><td><span class="tag opt">无可写无</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top:18px">AI 第一轮标准询问</h3>
+  <div class="prompt">
+    <div class="prompt-head">推荐回复模板｜L2日报</div>
+    <div class="prompt-body">好的。请一次性把今天的信息发给我，文字、截图、作业照片混合发送都可以，不需要提前整理成表格。
+
+1）学生与时间：姓名、年级、日期、当前路线；到校、离校、有效学习时长。
+2）今日任务：今天所有任务分别是什么；每项完成到哪里；可客观核对的任务请给总题数和正确数；Project/阅读等长期任务写今天推进到哪里；有顺延请说明原因。可以直接上传CJ/任务清单。
+3）今日错题与听写：请提供今日原始作业/试卷或明确文件路径，并提供本次批改结果（可来自其他AI、截图、文件、复制文字或本对话前序）。确认错题后必须逐题裁剪原始证据；并说明是否已答疑、是否已订正。
+4）学习过程与习惯：请给1–3条今天真实看到的行为，例如“到校后5分钟内自主启动”“综合题先独立尝试10分钟再求助”“后半段两次提醒后恢复任务”。不要只写“认真/努力”。
+5）其他情况：迟到、早退、材料缺失、特殊安排或需要家长知道的事项；没有写“无”。
+
+你可以直接用自然语言回复，我会自动整理并检查是否缺关键资料。</div>
+  </div>
+
+  <h3 style="margin-top:18px">必须追问的情况</h3>
+  <ul>
+    <li>有错题/听写错误，但缺原始图片。</li>
+    <li>任务只写“数学、英语都做了”，无法形成具体Checklist。</li>
+    <li>没有说明任务完成状态或长期任务当天推进情况。</li>
+    <li>学习过程与习惯只有“认真、努力、状态不错”等不可观察评价。</li>
+    <li>到/离校或有效学习数据关键缺失且无法从可靠记录计算。</li>
+  </ul>
+</section>
+
+<section id="l2week">
+  <h2>05｜Skill 2：L2 周看板｜信息采集规范</h2>
+  <p class="desc">周报原则上不让督导重新手填本周数据，而是读取本周日报后自动汇总。</p>
+
+  <table>
+    <thead><tr><th>输入</th><th>要求</th><th>AI动作</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag req">关键</span> 本周L2日报</td><td>提供本周所有实际到校日的日报HTML/内容</td><td>汇总出勤、时长、每日任务、分科正确率、错题、听写、持续任务、习惯观察</td></tr>
+      <tr><td><span class="tag verify">需确认</span> 缺失日期</td><td>若自然周工作日/约定托管日没有日报，说明“未到校 / 请假 / 节假日 / 日报缺失”</td><td>区分正常未到校与数据缺档</td></tr>
+      <tr><td><span class="tag opt">可选</span> 本周特别事项</td><td>日报无法完整体现的学校活动、考试周等</td><td>补入周度备注</td></tr>
+    </tbody>
+  </table>
+
+  <div class="prompt" style="margin-top:16px">
+    <div class="prompt-head">推荐回复模板｜L2周报</div>
+    <div class="prompt-body">可以。请一次性提供本周全部L2日报（HTML或直接上传文件均可）。
+
+如果本周某个原本应到校的日期没有日报，请同时说明该日属于：
+A. 未到校/请假；
+B. 节假日/机构不营业；
+C. 日报缺失，需要补资料。
+
+除此之外无需重新总结本周数据，我会从日报自动生成周报。</div>
+  </div>
+
+  <div class="callout amber" style="margin-top:14px">
+    <b>完整性校验：</b>如果只收到4份日报，AI不能默认“本周只来4天”，必须先确认第5天是未到校还是资料缺失。
+  </div>
+</section>
+
+<section id="l3day">
+  <h2>06｜Skill 3：L3 日看板｜信息采集规范</h2>
+  <p class="desc">完整继承L2日报全部输入，再增加“结构化错题所需证据”和“当天专项辅导”。</p>
+
+  <div class="callout green"><b>继承规则：</b>L3日报必须先满足L2日报的全部基础信息要求，不能因为增加了学业分析而丢掉到离校、任务执行、习惯观察等基础字段。</div>
+
+  <h3 style="margin-top:18px">L3新增输入 A｜结构化错题</h3>
+  <table>
+    <thead><tr><th>督导提供事实</th><th>AI负责结构化</th><th>禁止</th></tr></thead>
+    <tbody>
+      <tr><td>原始错题图片、题号/来源、正确答案或订正结果（有则提供）</td><td>题型、涉及能力/知识点、错误表现</td><td>用重绘题目替代原图</td></tr>
+      <tr><td>学生当时卡在哪里/如何作答（有则提供）</td><td>结合证据形成“错因”</td><td>仅凭一道题强行形成长期能力结论</td></tr>
+      <tr><td>巡班老师答疑时发现的关键问题（有则提供）</td><td>提高错因判断精度</td><td>证据不足时假装确定</td></tr>
+      <tr><td>订正状态</td><td>记录是否闭环</td><td>未订正写成已掌握</td></tr>
+    </tbody>
+  </table>
+  <div class="callout amber" style="margin-top:12px">
+    <b>证据不足的处理：</b>允许写“本次表现为……，是否属于稳定问题需继续观察”或“当前证据不足，暂无法判断深层原因”。不要为追求完整而编造错因。
+  </div>
+
+  <h3 style="margin-top:18px">L3新增输入 B｜今日专项辅导</h3>
+  <table>
+    <thead><tr><th>科目</th><th>需要提供</th><th>没有上课时</th></tr></thead>
+    <tbody>
+      <tr><td>Math</td><td>是否上课、30min课次、主要内容、教师课后反馈</td><td>明确写“Math今日未安排专项辅导”</td></tr>
+      <tr><td>English</td><td>是否上课、30min课次、主要内容、教师课后反馈</td><td>明确写“English今日未安排专项辅导”</td></tr>
+    </tbody>
+  </table>
+
+  <div class="prompt" style="margin-top:16px">
+    <div class="prompt-head">推荐回复模板｜L3日报</div>
+    <div class="prompt-body">好的。L3日报会完整继承L2日报的信息，所以请先一次性提供：学生/日期/路线、到离校与有效学习时长、今日全部任务及核对结果、错题/听写原图、学习过程与习惯、其他异常。
+
+另外请补两类L3信息：
+
+6）错题补充信息：每道错题尽量提供原始图片、正确答案/订正结果、学生当时卡在哪里或说了什么、巡班老师答疑时发现的关键问题。你不需要自己填写“题型/能力/错因”，我会根据证据结构化；证据不足时不会强行下结论。
+
+7）今日专项辅导：请分别说明Math和English今天是否上30分钟专项辅导。如有，请提供主要内容和老师课后反馈；没有请直接写“Math无 / English无”。</div>
+  </div>
+</section>
+
+<section id="l3week">
+  <h2>07｜Skill 4：L3 周看板｜信息采集规范</h2>
+  <p class="desc">读取本周L3日报自动汇总，并额外执行“每周Math 2次 + English 2次”的交付校验。</p>
+
+  <table>
+    <thead><tr><th>输入</th><th>要求</th><th>AI自动处理</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag req">关键</span> 本周全部L3日报</td><td>所有实际到校日</td><td>继承L2周报全部汇总 + 错题重复信号 + 习惯观察</td></tr>
+      <tr><td><span class="tag verify">强校验</span> Math专项辅导</td><td>本周应为2次×30min</td><td>统计“应上2 / 已上X / 是否完成”</td></tr>
+      <tr><td><span class="tag verify">强校验</span> English专项辅导</td><td>本周应为2次×30min</td><td>统计“应上2 / 已上X / 是否完成”</td></tr>
+      <tr><td><span class="tag opt">补充</span> 教师反馈</td><td>若某次日报漏记，可单独补充</td><td>补齐课次记录与周度摘要</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout red" style="margin-top:14px">
+    <b>禁止旧逻辑：</b>不得出现“上周结转 / 本周新增 / 本周剩余 / 累计余额”。课次当周清零，不结转。
+  </div>
+
+  <div class="prompt" style="margin-top:16px">
+    <div class="prompt-head">推荐回复模板｜L3周报</div>
+    <div class="prompt-body">请一次性提供本周全部L3日报。如果某次Math/English专项辅导没有写进日报，请同时补充该次课程的日期、30分钟时长、主要内容和教师反馈。
+
+我会自动汇总本周执行数据、错题重复信号、学习习惯，并校验：
+- Math：本周应上2次；
+- English：本周应上2次。
+
+如果识别到某科不足2次，我会先确认是“资料漏传”还是“本周确实未完成”，再生成周报。</div>
+  </div>
+
+  <h3 style="margin-top:18px">专项辅导不足时的唯一补问模板</h3>
+  <div class="prompt">
+    <div class="prompt-head">示例</div>
+    <div class="prompt-body">我目前从本周资料中识别到：
+Math 1/2次，English 2/2次。
+
+请确认Math少1次属于：
+A. 实际已上，但日报/教师反馈未上传；
+B. 本周确实只完成1次。
+
+如果是A，请补充该次课程信息；如果是B，请告诉我未完成原因，我会在周报中如实记录。</div>
+  </div>
+</section>
+
+<section id="l3month">
+  <h2>08｜Skill 5：L3 月看板｜信息采集规范</h2>
+  <p class="desc">月报不要求督导重新回忆整个月。主数据直接汇总目标月份内的L3日报，督导只补“月测、路线更新、特殊事项”等无法从日报获得的新信息。</p>
+
+  <table>
+    <thead><tr><th>输入资料</th><th>用途</th><th>缺失处理</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag req">关键</span> 本月L3日报</td><td>月度执行、专项辅导、错题重复问题、习惯变化</td><td>只读取目标月份内的日报；缺失关键日期时再追问</td></tr>
+      <tr><td><span class="tag reuse">继承</span> 上月L3月报</td><td>环比趋势、上阶段重点、干预效果</td><td>首次月报则标记“首月，无上月对比”</td></tr>
+      <tr><td><span class="tag req">关键</span> 本月模拟测试</td><td>日期、成绩、分项表现、与日常记录对应</td><td>无数据不得编成绩；若本月应测未测，记录异常原因</td></tr>
+      <tr><td><span class="tag req">关键</span> 路线最新进度</td><td>传统/国际/转轨管理及升学节点</td><td>无变化可明确写“本月无更新”；不得沿用旧风险当成新变化</td></tr>
+      <tr><td><span class="tag opt">可选</span> 本月特殊事项</td><td>长假、考试周、重大课程调整等</td><td>没有可写“无”</td></tr>
+    </tbody>
+  </table>
+
+  <div class="prompt" style="margin-top:16px">
+    <div class="prompt-head">推荐回复模板｜L3月报</div>
+    <div class="prompt-body">好的。请一次性提供这个月的“月报资料包”：
+
+1）本月日期范围内的L3日报；如本地日报文件夹可读取，只需确认月份。
+2）上个月L3月报，用于做环比；如果这是第一次生成月报，直接写“首月”。
+3）本月模拟测试：测试日期、试卷/成绩、分项结果或老师说明；可以直接上传照片或报告。
+4）本月路线进度：当前路线是否变化；是否新增校内考试、MAP/RIT、转轨、择校/升学节点等。没有变化请写“无更新”。
+5）本月特殊事项：长假、考试周、长期请假、课程调整等；没有写“无”。
+
+其余月度数据我会从当月日报自动汇总，不需要你重新总结，也不会扫描原始试卷或独立错题库。</div>
+  </div>
+
+  <h3 style="margin-top:18px">月报证据强度规则</h3>
+  <table>
+    <thead><tr><th>情况</th><th>可以怎么写</th><th>不可以怎么写</th></tr></thead>
+    <tbody>
+      <tr><td>只出现1次错误</td><td>“本月出现1次相关错误，暂未形成稳定重复信号”</td><td>“该能力明显薄弱”</td></tr>
+      <tr><td>多周重复出现</td><td>可进入“能力问题地图”，并标注趋势</td><td>忽略时间跨度只报总次数</td></tr>
+      <tr><td>已有教学干预</td><td>对比干预前后同类任务/正确率/出现次数</td><td>仅因为上过课就写“已改善”</td></tr>
+      <tr><td>上月口径不同</td><td>说明“口径不同，暂不直接环比”</td><td>强行计算变化率</td></tr>
+      <tr><td>月测缺失</td><td>“本月月测数据未提供/未完成”</td><td>根据日常作业推测测试成绩</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="validation">
+  <h2>09｜全局校验与防错规则</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>数据计算规则</h3>
+      <ul>
+        <li>正确率只统计有标准答案、可客观核对的题目。</li>
+        <li>作文、Project、阅读时长、开放任务不强行计入正确率。</li>
+        <li>题目错题与听写错误分开统计，避免口径混淆。</li>
+        <li>有效学习时长不能仅用“离校－到校”默认计算，除非已明确包含/扣除休息。</li>
+        <li>长周期任务记录“当天推进”，不把未到截止日写成未完成。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>表达与证据规则</h3>
+      <ul>
+        <li>学习习惯必须写可观察行为，不写“认真、努力、态度好”。</li>
+        <li>L2不输出错因、能力诊断或专项训练建议。</li>
+        <li>L3错因证据不足时允许“待观察 / 暂无法判断”。</li>
+        <li>原始错题图片是事实证据，AI不得重画后替代。</li>
+        <li>家长端不展示“AI说 / 学生说 / 老师说”，统一输出最终记录。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="margin-top:18px">生成前必须通过的 8 项检查</h3>
+  <table>
+    <thead><tr><th>#</th><th>检查项</th><th>通过标准</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>学生身份</td><td>姓名/年级/日期或周期无错配</td></tr>
+      <tr><td>2</td><td>路线</td><td>存在有效路线信息，或已明确本期无变化</td></tr>
+      <tr><td>3</td><td>任务</td><td>每项任务有具体内容和状态，长期任务有当天/本周推进</td></tr>
+      <tr><td>4</td><td>客观数据</td><td>正确率分母清楚，不把开放任务纳入</td></tr>
+      <tr><td>5</td><td>错题证据</td><td>有错题时有原图；订正状态真实</td></tr>
+      <tr><td>6</td><td>学习习惯</td><td>至少有可观察行为，非空泛评价</td></tr>
+      <tr><td>7</td><td>L3课次</td><td>周报检查Math 2/2、English 2/2；不足必须确认原因</td></tr>
+      <tr><td>8</td><td>L3月报</td><td>月测与路线最新信息有明确来源；没有则明确标注缺失</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="quick">
+  <h2>10｜一线督导速查版</h2>
+  <p class="desc">培训时只需要记住下面五句话；详细字段由 Skill 自动提示。</p>
+  <div class="grid2">
+    <div class="rule"><b><span class="num">1</span>L2日报</b>“把今天学生、时间、任务、核对结果、错题原图、学习习惯和异常一次性发给AI。”</div>
+    <div class="rule"><b><span class="num">2</span>L2周报</b>“把本周所有L2日报交给AI；缺哪天，只解释为什么缺。”</div>
+    <div class="rule"><b><span class="num">3</span>L3日报</b>“L2日报全部信息 + 错题证据 + 今天Math/English有没有上专项及老师反馈。”</div>
+    <div class="rule"><b><span class="num">4</span>L3周报</b>“把本周L3日报交给AI；AI自动检查Math 2次、English 2次是否完成。”</div>
+    <div class="rule"><b><span class="num">5</span>L3月报</b>“本月日报 + 本月月测 + 最新路线进度 + 必要时上月月报；其余让AI自己汇总。”</div>
+    <div class="rule"><b><span class="num">!</span>共同底线</b>“不知道就写不知道，没有就写没有；不要为了让报告好看而补数据。”</div>
+  </div>
+
+  <div class="callout blue" style="margin-top:16px">
+    <b>建议用于 Skill 的统一开场：</b>一线人员只需要说 <span class="kbd">“我要生成一份L3周报”</span>。Skill负责接管后续信息采集、完整性审核、追问和生成，不要求督导自行记住提示词。
+  </div>
+</section>
+
+<section>
+  <h2>11｜版本与后续使用</h2>
+  <table>
+    <thead><tr><th>版本</th><th>日期</th><th>用途</th><th>后续变更规则</th></tr></thead>
+    <tbody>
+      <tr><td>v1.3</td><td>2026-09-02</td><td>补充严格文件读取白名单、日报长期任务连续性、批改结果来源无关化与强制逐题裁剪</td><td>产品规则变化先更新 Source of Truth；运行逻辑变化同步更新本规范、5个 Skill 与 GitHub 工作流。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="footer">5个看板 Skill 信息采集与交互规范 v1.3｜面向一线督导的统一AI使用协议</div>
+</main>
+</body>
+</html>
