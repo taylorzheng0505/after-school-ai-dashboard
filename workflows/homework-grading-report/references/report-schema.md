@@ -4,7 +4,7 @@ Use one JSON object with this shape:
 
 ```json
 {
-  "report_version": "1.1",
+  "report_version": "1.5",
   "student_name": "",
   "subject": "Math",
   "grade": "G10",
@@ -57,3 +57,23 @@ Use one JSON object with this shape:
 - If conservative per-question cropping genuinely fails, set `evidence_crop_status: exception`, explain the reason in `evidence_exception`, and use the largest safe contextual image available. This is not a normal fallback.
 - The renderer embeds the image into the HTML and removes `evidence_image_path` from the hidden downstream payload. The payload keeps `evidence_dom_id`, so downstream daily-report workflows can retrieve the image from the corresponding `<img>` element without duplicating base64.
 - Use `pattern_summary` only for repeated patterns supported by at least two wrong items. Do not convert a single wrong item into a stable student diagnosis.
+
+
+## Output package contract v1.5
+
+For every grading run, write:
+
+```text
+<assignment-output>/
+├── grading-data.json
+├── grading-report.html
+└── crops/
+    ├── <assignment>-q03.png
+    └── ...
+```
+
+- `grading-data.json` is the authoritative downstream interface for L2/L3 daily reports.
+- Keep `evidence_image_path` / `evidence_image_paths` as relative filesystem paths to `crops/`; never put base64 in JSON.
+- `grading-report.html` remains the human-facing self-contained report and may embed crop bytes as base64.
+- Downstream daily workflows must not parse this heavy HTML when `grading-data.json` exists.
+- Reuse the same crop image files downstream; do not create second copies merely for the daily report.

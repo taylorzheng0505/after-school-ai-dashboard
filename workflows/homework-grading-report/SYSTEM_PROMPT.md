@@ -1,3 +1,8 @@
+---
+name: homework-grading-report
+description: Grade student homework or worksheets from images, PDFs, or local files across math, English, science, history, Chinese, and other school subjects, then generate a standardized grading package (grading-data.json + crops + self-contained HTML) for downstream daily dashboards. Use when the user asks to 批改作业、批改试卷、检查答案、生成批改报告、统计正确率. Grade every scorable item, calculate total/correct/wrong/accuracy, analyze every wrong item by question type, tested ability, observed error manifestation, and evidence-grounded error cause, and when the source is a full page, mandatorily create and embed a separate crop for every wrong question.
+---
+
 # Homework Grading Report
 
 Turn raw student work into a standardized grading artifact that downstream L2/L3 daily dashboards can reuse without re-grading, re-analyzing, or re-cropping the same assignment.
@@ -13,9 +18,9 @@ Turn raw student work into a standardized grading artifact that downstream L2/L3
 7. Build a wrong-question index. If a wrong item comes from a full worksheet/page image, **mandatory: create a separate per-question evidence crop** following `references/cropping.md`. Do not use the whole page as the normal wrong-question image.
 8. Store the crop path in `evidence_image_path`. If the source was already a single-question image, reuse it as the evidence image. If no visual source exists, use `evidence_crop_status: not_applicable`. Whole-page fallback is exception-only.
 9. Calculate total, correct, wrong, accuracy, and pending-review count. Verify arithmetic.
-10. Create a structured JSON file that follows `references/report-schema.md`.
+10. Create the machine-facing file **exactly as `grading-data.json`** following `references/report-schema.md`. Keep crop paths as paths; never put base64 image data into this JSON.
 11. Run `python scripts/validate_grading_data.py <data.json>` and fix all validation errors.
-12. Run `python scripts/render_report.py <data.json> <report.html>` to render the locked HTML template. The renderer embeds each wrong-question evidence image into the HTML as a self-contained data URI.
+12. Run `python scripts/render_report.py grading-data.json grading-report.html` to render the locked human-facing HTML. The renderer embeds crop bytes into the HTML as a self-contained data URI without changing the JSON.
 13. Run `python scripts/validate_report_html.py <report.html>`. Deliver only on `PASS`.
 
 ## Mandatory wrong-item analysis standard
@@ -56,9 +61,12 @@ Do not force the user to fill a rigid form if the files/context already provide 
 
 ## Output contract
 
-Always produce:
-1. a standardized self-contained HTML grading report;
-2. its JSON data source alongside the HTML when the environment supports file creation.
+Always produce the full three-part grading package:
+1. `grading-data.json` — compact authoritative machine interface;
+2. `crops/` — independent per-wrong-question evidence images;
+3. `grading-report.html` — self-contained human-facing report with those same images embedded.
+
+Do not treat the HTML as the downstream machine interface when the JSON exists.
 
 The HTML structure and visual style are locked by `assets/report-template.html`. Do not redesign the page. Use the renderer.
 
@@ -73,7 +81,7 @@ The report must contain:
 
 ## Downstream dashboard compatibility
 
-This report is the preferred source for daily dashboards.
+`grading-data.json` plus its referenced crop files are the preferred source for daily dashboards. The HTML is for human viewing and compatibility fallback only.
 
 - Preserve stable `assignment_id` and `question_id` values.
 - Preserve `source_file`, `source_locator`, `evidence_crop_status`, and `evidence_dom_id`.

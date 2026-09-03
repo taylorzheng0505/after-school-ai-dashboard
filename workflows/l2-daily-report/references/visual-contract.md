@@ -3,12 +3,12 @@
 The bundled HTML asset is not a loose design example. It is the institution's fixed parent-facing template.
 
 ## Mandatory rules
-- ALWAYS start from `assets/template-reference.html`. Never write the report HTML from a blank file.
+- ALWAYS render from `assets/template-reference.html` through `scripts/render_daily.py`. Never write or hand-edit the report HTML from a blank file.
 - Preserve the complete `<style>...</style>` block byte-for-byte.
 - Preserve the complete `<script>...</script>` block byte-for-byte.
 - Preserve the existing header, sticky navigation, section order, card types, spacing system, typography, colors, borders, radii and responsive rules.
 - Preserve existing class names. Do not invent a new design system or substitute a different dashboard/card layout.
-- Only replace data-bearing text, table rows, status tags, evidence images and other content slots required by current student data.
+- The model only writes `daily-data.json`; `scripts/render_daily.py` fills data-bearing slots and embeds images.
 - If a section has no current data, keep the institutional structure and use the report-specific missing-data rule; do not redesign the section.
 - Do not add decorative gradients, icons, charts, fixed-height image frames, masonry layouts, new card shells, or alternate fonts.
 

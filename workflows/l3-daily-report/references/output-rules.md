@@ -23,11 +23,11 @@ Accept natural language, screenshots, photos, HTML dashboards and mixed input. D
 - OCR can assist extraction, labeling and indexing, but the displayed evidence should remain the original image.
 - When evidence is insufficient, say “暂无法判断/需继续观察” rather than inventing a cause.
 - Never reuse mock values from the bundled template.
-- If a standardized homework-grading HTML already contains an embedded per-question crop, reuse that crop directly; do not crop the same question again.
+- If a standardized homework-grading package exists, read `grading-data.json` and reuse the referenced crop file directly; do not crop the same question again. Do not parse the heavy grading HTML when JSON is available.
 - When an uncovered confirmed wrong question comes from a larger page, per-question cropping is mandatory; follow `references/cropping.md`.
 
 ## Output
-- Create one self-contained parent-facing HTML file.
+- Create one self-contained parent-facing HTML file, but build it via `daily-data.json` + `scripts/render_daily.py` so base64 image bytes never enter model reasoning.
 - Start from `assets/template-reference.html` as the locked base template.
 - Preserve the approved structure, CSS language, visual shell and section order unless the user explicitly asks to redesign the template.
 - Replace all mock/sample content with current student data.
@@ -58,3 +58,9 @@ Accept natural language, screenshots, photos, HTML dashboards and mixed input. D
 - Preserve the template’s `<style>` block, `<script>` block and section-id order.
 - Run `scripts/validate_visual.py` before final delivery. If the validator fails, correct the HTML until it passes.
 - For every confirmed wrong question sourced from a full page, use `scripts/safe_crop.py` (or an equivalent conservative crop operation when the runtime cannot execute the script) and produce a per-question crop. Do not skip cropping merely because the whole page is readable.
+
+## Runtime performance contract v1.5
+- Reason over compact JSON/text metadata, not base64 image strings.
+- Do not open the human-facing grading HTML merely to obtain fields already present in `grading-data.json`.
+- Do not manually edit the final HTML. Produce `daily-data.json` and let the renderer build it.
+- The renderer, not the model, reads crop image bytes and performs base64 embedding.

@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.5 — 2026-09-03
+- 批改Skill输出改为三件套：`grading-data.json + crops/ + grading-report.html`；HTML仍完整嵌图，但JSON只存轻量文字和图片路径。
+- L2/L3日报正常运行时禁止解析重型批改HTML；优先读取 `grading-data.json`，仅复用被引用的错题图片路径。
+- L2/L3日报新增 `daily-data.json` 中间层及 `render_daily.py`：模型只处理轻量结构化数据，图片base64嵌入由程序完成。
+- 日报固定模板移除示例base64图片，模板体积从约260KB降至约8KB；视觉、栏目和错题双栏布局不变。
+- 保留无标准批改报告材料的日报自主裁图能力。
+
 ## v1.4 — 2026-09-02
 - 新增跨学科 `homework-grading-report` Skill / workflow。
 - 作业批改报告强制输出总题量、正确量、错误量、正确率，并对每道错题输出题型、考查能力、错误表现、错因、正确/参考答案和关键解析。
