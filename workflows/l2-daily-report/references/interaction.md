@@ -7,7 +7,7 @@ Read `student-context.md` and `file-access-scope.md`. Reuse stable profile field
 好的。请一次性把今天的信息发给我，文字、截图、文件路径、作业照片都可以，不需要整理成表格。
 
 1）学生与时间：姓名/年级/路线如已在当前学生档案中明确可不重复；请确认今天日期、到校、离校、有效学习时长。
-2）今日任务：今天所有任务及完成/推进情况。长期任务如果上一份日报仍未结束，我会读取上一份日报并请你确认今天推进到哪里。
+2）今日任务：今天所有任务、完成/推进情况和截止日期。明确属于“今天必须完成”的普通作业，如没有另行DDL，我会按今天作为截止日期；长期/分阶段任务请尽量给出真实DDL。上一份日报仍未结束的长期任务，我会读取其最新进度和已确认DDL，并请你确认今天推进到哪里、DDL是否有变化。
 3）今日标准作业批改报告：如果今天某份作业已经生成标准批改HTML，请直接上传或告诉我文件路径。我会直接复用其中的统计、逐题错题裁图；L3还会复用题型/能力/错误表现/错因，不重复处理。
 4）没有标准批改报告的材料：请上传原始作业/试卷，或告诉我明确文件/文件夹路径；如果已有文字、截图或其他AI生成的批改结果，也一起给我。
 5）错题订正：请说明已确认错题是否已经答疑/订正；听写错误同理。
@@ -20,6 +20,7 @@ Read `student-context.md` and `file-access-scope.md`. Reuse stable profile field
 - Student identity/date cannot be reliably resolved.
 - Arrival/departure/effective-study data are materially missing.
 - Today's tasks/status are too vague.
+- A long-cycle/staged task is still active but its deadline cannot be resolved; ask once for the deadline, then show “未明确” if genuinely unavailable.
 - Grading result is missing and neither the supervisor nor this AI has established which questions are wrong.
 - Confirmed wrong questions cannot be mapped back to the supplied/identified source page.
 - Correction status is missing for reported errors.

@@ -17,6 +17,7 @@ Accept natural language, screenshots, photos, HTML dashboards and mixed input. D
 - Keep normal wrong questions and dictation errors as separate counts.
 - Do not treat arrival-to-departure duration as effective study time unless breaks are known or the user explicitly says it equals effective study time.
 - Do not create an overall task completion rate when long-cycle tasks are present.
+- Every task row must show a deadline. Clear same-day homework may use the report date; long-cycle/staged tasks use the confirmed DDL and may carry that DDL forward while unfinished. Unknown long-cycle DDL must be shown as “未明确”, never guessed.
 
 ## Evidence
 - Preserve user-provided original wrong-question and dictation images. Do not redraw or replace them with OCR text.

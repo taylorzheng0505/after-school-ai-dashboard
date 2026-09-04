@@ -1,32 +1,39 @@
-# 部署速查
+# 部署速查 v1.7
 
-## GitHub 本身的用途
-GitHub 是本工作流的统一版本库，不是学生数据仓库。
+## GitHub用途
+GitHub只保存规则、模板、脚本和Skill，不保存学生真实数据。
 
-## 一线使用推荐
-- 每个学生建立独立对话。
-- 每个学生绑定独立本地资料文件夹。
-- 批改作业时优先使用 `homework-grading-report`；生成看板时选择对应 L2/L3 日/周/月工作流。
-- 督导只需说“生成今天的 L2 日报”等自然语言指令。
-- 日报如已有标准作业批改HTML，应优先提供该HTML或其路径；日报直接复用其中的统计、分析与逐题裁图。
-- 没有标准批改报告的材料，督导再明确告诉AI原始文件/文件夹路径或提供其他AI/人工批改结果。
+## 一线推荐
+- 一个学生一个独立对话，并绑定独立本地学生目录。
+- 批改先用 `homework-grading-report`。
+- 日报优先读取 `grading-data.json`。
+- 周报优先读取目标周 `daily-data.json`。
+- 月报优先读取目标月 `daily-data.json`；环比优先读取上月 `monthly-data.json`。
+- 若对应JSON不存在，只允许读取同一日期/周期的HTML作为兼容回退，不得扩大扫描。
 
-## 文件范围
-- 日报只额外读取最近一份历史日报用于长期任务连续性。
-- 周报只读取目标周日报。
-- 月报只读取目标月日报 + 月测/路线 + 必要的上月月报。
-- 周/月不扫描原始试卷或独立错题库。
+## v1.7 周报执行
+1. 按目标周筛选 daily-data JSON；
+2. `aggregate_weekly_data.py` 生成初步 `weekly-data.json`；
+3. AI只补习惯总结、L3重复信号/下周重点等判断字段；
+4. `validate_weekly_data.py`；
+5. `render_weekly.py`；
+6. `validate_visual.py`；
+7. 输出最终自包含HTML。
 
-## AI能力分级
-1. 能读本地文件 + 执行代码 + 生成文件：完整能力，推荐。
-2. 能读本地文件 + 生成 HTML：可用，但日报逐题裁剪和视觉验证必须按文本规则执行。
-3. 只能聊天：不适合作为机构长期标准方案。
+## v1.7 月报执行
+1. 按目标月筛选 L3 daily-data JSON；
+2. 加入明确提供的月测、路线、上月比较数据；
+3. `aggregate_monthly_data.py` 生成初步 `monthly-data.json`；
+4. AI补趋势、能力地图、深度分析、干预效果、习惯、路线和下月重点；
+5. `validate_monthly_data.py`；
+6. `render_monthly.py`；
+7. `validate_visual.py`。
 
-## v1.5 性能接口
-若AI产品支持本地文件与脚本执行：
-1. 批改后保留同目录的 `grading-data.json`、`grading-report.html`、`crops/`；
-2. 日报指向 `grading-data.json`，不要把 `grading-report.html` 作为正常机器输入；
-3. 日报模型输出 `daily-data.json`；
-4. 执行 `render_daily.py` 生成最终HTML。图片由脚本读取并嵌入，模型不处理base64。
+## AI能力
+1. 能读本地文件 + 执行脚本：推荐，完整执行v1.7。
+2. 能读本地文件但不能执行脚本：可参考 schema 手工生成JSON/HTML，但稳定性和速度会下降。
+3. 只能聊天：不适合机构长期标准化生产。
 
-若目标AI不能运行脚本，可回退到旧式HTML直接生成，但速度/积分优势会明显下降。
+
+## v1.7 deadline field
+Use daily/weekly workflow packages from v1.7 together so `tasks[].due_date` propagates correctly into weekly ongoing/carryover tracking.

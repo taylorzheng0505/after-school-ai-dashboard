@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, base64, html, json, mimetypes
+import argparse, base64, html, json, mimetypes, re
 from pathlib import Path
 
 
@@ -26,7 +26,24 @@ def tag(text, kind="gray"):
     return f'<span class="tag {esc(kind)}">{esc(text)}</span>'
 
 
-def render_tasks(tasks):
+def due_display(task, report_date_text):
+    due = task.get("due_date")
+    if not due:
+        return "未明确"
+    due = str(due).strip()
+    report_date = None
+    m = re.search(r"(20\d{2})[年\-/](\d{1,2})[月\-/](\d{1,2})", str(report_date_text or ""))
+    if m:
+        report_date = f"{int(m.group(1)):04d}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+    if due == report_date:
+        return "当日"
+    m2 = re.fullmatch(r"(20\d{2})-(\d{2})-(\d{2})", due)
+    if m2:
+        return f"{int(m2.group(2))}/{int(m2.group(3))}"
+    return due
+
+
+def render_tasks(tasks, report_date_text):
     rows = []
     for t in tasks:
         done = t.get("status", "done") == "done"
@@ -40,9 +57,9 @@ def render_tasks(tasks):
             note = tag("长周期任务", "amber") + " " + note
         rows.append(
             f'<tr><td class="check {cls}">{mark}</td><td class="subject">{esc(t.get("subject"))}</td>'
-            f'<td>{esc(t.get("task"))}</td><td>{result}</td><td>{note}</td></tr>'
+            f'<td>{esc(t.get("task"))}</td><td>{esc(due_display(t, report_date_text))}</td><td>{result}</td><td>{note}</td></tr>'
         )
-    return "".join(rows) if rows else '<tr><td colspan="5">今日暂无任务记录。</td></tr>'
+    return "".join(rows) if rows else '<tr><td colspan="6">今日暂无任务记录。</td></tr>'
 
 
 def status_tags(item):
@@ -183,8 +200,8 @@ def main():
     tasks = (
         f'<section id="tasks"><h2>01｜今日任务 Checklist</h2><p class="desc">{task_desc}</p><table><thead><tr>'
         '<th style="width:54px">状态</th><th style="width:90px">科目</th><th>具体任务</th>'
-        '<th style="width:165px">本次核对结果</th><th style="width:255px">完成情况 / 备注</th>'
-        f'</tr></thead><tbody>{render_tasks(data.get("tasks") or [])}</tbody></table></section>'
+        '<th style="width:110px">截止日期</th><th style="width:145px">本次核对结果</th><th style="width:220px">完成情况 / 备注</th>'
+        f'</tr></thead><tbody>{render_tasks(data.get("tasks") or [], data.get("date_display"))}</tbody></table></section>'
     )
     wrong = render_wrong(data, base, rt)
     if rt == "l3":

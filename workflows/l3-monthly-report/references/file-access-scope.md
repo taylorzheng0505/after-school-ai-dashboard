@@ -1,21 +1,16 @@
-# File access scope — monthly report
+# File access scope — L3 monthly report v1.6
 
-Use a strict allowlist. Do not recursively scan the student's whole workspace.
+Use a strict allowlist. Do not recursively scan the student workspace.
 
 ## Allowed sources
-1. Stable profile documents for the current student when needed.
-2. Daily reports belonging to the current student whose dates fall inside the requested month.
-3. The current month's mock/assessment materials or summarized results explicitly provided or explicitly located by the supervisor.
-4. The current month's route-management update explicitly provided or explicitly located by the supervisor.
-5. The immediately previous monthly report only when month-over-month comparison is required.
-6. Explicit supplemental teacher/tutoring facts only when required data are not present in the daily reports.
+1. Stable profile data when needed.
+2. Target-month L3 `daily-data.json` files. Only if a day's JSON is unavailable, read that exact day's L3 daily HTML as a compatibility fallback.
+3. Current-month mock/assessment data explicitly supplied or explicitly located.
+4. Current-month route update explicitly supplied or explicitly located.
+5. Previous `monthly-data.json` when comparison is required; if unavailable, use the immediately previous monthly HTML only as a compatibility fallback.
+6. Explicit supplemental teacher facts when required source data are absent from daily data.
 
-## Required behavior
-- Filter daily reports by target-month date/file name before reading content.
-- Aggregate wrong-question, dictation, tutoring and habit trends from the daily reports.
-- Use the prior monthly report only for explicit comparison, never as current-month fact.
+## Forbidden by default
+Do not scan raw homework/test folders, standalone wrong-question libraries, unrelated historical months, or arbitrary sibling folders. Do not re-crop worksheets. Do not parse weekly reports when target-month daily data is available.
 
-## Forbidden sources by default
-Do not scan raw homework/worksheet/test folders. Do not scan the standalone wrong-question library. Do not scan unrelated historical months. Do not re-crop original worksheets for a monthly report.
-
-If required mock/route data are missing, ask for the exact information or file/path instead of broadening the search.
+Filter by target month before opening files. If a required mock/route source is missing, ask for that exact source instead of broadening the search.

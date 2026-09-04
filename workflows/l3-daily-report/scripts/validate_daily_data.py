@@ -13,6 +13,14 @@ def main():
     rt = d.get("report_type")
     if rt not in {"l2", "l3"}: errors.append("report_type must be l2 or l3")
     if rt == "l3" and "tutoring" not in d: errors.append("L3 missing tutoring")
+    for i, t in enumerate(d.get("tasks") or []):
+        if "due_date" not in t:
+            errors.append(f"tasks[{i}] missing due_date key")
+        due = t.get("due_date")
+        if due not in (None, ""):
+            import re
+            if not re.fullmatch(r"20\d{2}-\d{2}-\d{2}", str(due)):
+                errors.append(f"tasks[{i}] due_date must be YYYY-MM-DD or null")
     for group in ("wrong_questions", "dictation_errors"):
         for i, q in enumerate(d.get(group) or []):
             if not q.get("title"): errors.append(f"{group}[{i}] missing title")

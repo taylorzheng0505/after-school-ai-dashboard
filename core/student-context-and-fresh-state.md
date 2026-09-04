@@ -18,3 +18,8 @@ Today's grading result may come from the current AI, another AI, pasted text, sc
 
 ## Period isolation
 Weekly reports aggregate only current-student daily reports inside the requested week. Monthly reports aggregate only current-student daily reports inside the requested month, plus explicit monthly assessment/route sources and the previous monthly report when comparison is required.
+## Task deadline continuity
+- A deadline belongs to the task, not to the report day. For an unfinished long-cycle task, the most recent confirmed deadline may carry forward with that same task until the task is completed or a newer deadline is explicitly provided.
+- Do not carry yesterday's deadline to a different/new task merely because the subject is the same.
+- For clearly same-day homework with no different deadline stated, the report date may be used as the deadline. For long-cycle tasks, never invent a deadline; ask once when material, then use “未明确” if still unavailable.
+- Weekly aggregation uses the latest confirmed deadline for each continuing task and marks unresolved items for next-week follow-up.

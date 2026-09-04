@@ -9,6 +9,8 @@ Use these rules as the authority whenever older examples or user-supplied legacy
 - Preserve original wrong-question images as factual evidence. AI may crop/organize them but must never replace them with OCR-redrawn questions.
 - Roaming-teacher quick support is an operational resource, roughly capped around 20 minutes per student/day internally; it is not a promised class allotment.
 - Long-cycle projects/reading are tracked by progress for the current day/week, not by misleading task-completion percentages.
+- Every daily task carries a deadline. Ordinary same-day homework may use the report date as the deadline when the assignment is clearly due that day; long-cycle/staged tasks must preserve the actual stated deadline. If a long-cycle deadline is genuinely unavailable, show “未明确” rather than inventing a date.
+- Weekly dashboards inherit task deadlines from daily data. They must clearly identify unfinished/ongoing tasks at week end, show each deadline, and indicate which items continue into the next week or are already overdue.
 - Learning-process/habit comments must describe observable behavior, not vague praise such as “认真/努力”.
 
 ## L2

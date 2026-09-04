@@ -1,54 +1,36 @@
-# Shared report-generation rules
+# Weekly report generation rules v1.6
 
-## Interaction states
-Classify the provided information internally:
-- GREEN: critical information complete -> generate now.
-- AMBER: only non-critical information missing -> generate without inventing; use “未提供/暂无记录/今日无” only where needed.
-- RED: critical information missing -> do not generate yet; ask one targeted follow-up containing only blocking gaps.
-
-Never ask one question at a time. Ask for all missing critical inputs in one message. After the follow-up, generate with what is available and explicitly mark any still-missing nonfabricable item.
-
-## Input style
-Accept natural language, screenshots, photos, HTML dashboards and mixed input. Do not force the supervisor to fill a rigid form. The checklist tells them what information is needed; the model does the structuring.
+## Data-driven production
+- The model must produce/edit `weekly-data.json`, not hand-edit final HTML.
+- Run `aggregate_weekly_data.py` first to compute deterministic totals and collect daily records.
+- Use AI judgment only to synthesize the fields that cannot be calculated mechanically, such as weekly habit summaries and (for L3) recurring signals / next-week focus.
+- Run `validate_weekly_data.py` before rendering.
+- Run `render_weekly.py` to generate final HTML.
+- Run `validate_visual.py` before delivery.
 
 ## Calculations
-- Calculate percentages from supplied counts; never ask the supervisor to calculate them.
-- Only calculate accuracy for objectively scorable tasks with a defensible denominator.
-- Keep normal wrong questions and dictation errors as separate counts.
-- Do not treat arrival-to-departure duration as effective study time unless breaks are known or the user explicitly says it equals effective study time.
-- Do not create an overall task completion rate when long-cycle tasks are present.
+- Do not ask the supervisor to total hours, question counts, accuracy, or session counts when source daily data contains them.
+- Only objective scorable tasks contribute to subject accuracy.
+- Keep normal wrong questions and dictation errors separate.
+- Long-cycle tasks never create a misleading overall task-completion rate.
+- Inherit task deadlines from daily data. The weekly ongoing/carryover table must show each task's deadline and latest status. Any unresolved item at week end is explicitly marked as continuing into next week; overdue items are labeled as overdue rather than silently rolled forward.
 
 ## Evidence
-- Preserve user-provided original wrong-question and dictation images. Do not redraw or replace them with OCR text.
-- OCR can assist extraction, labeling and indexing, but the displayed evidence should remain the original image.
-- When evidence is insufficient, say “暂无法判断/需继续观察” rather than inventing a cause.
-- Never reuse mock values from the bundled template.
+- Reuse evidence image paths already present in daily data.
+- Never re-scan or re-crop raw worksheets for weekly reports.
+- Never put base64 strings inside `weekly-data.json`; only the renderer embeds image bytes into final HTML.
+
+## L2 boundary
+- L2 summarizes execution facts, objective statistics, errors and habits only.
+- Do not add question-type/ability/error-cause diagnosis to parent-facing L2 weekly output.
+
+## L3 boundary
+- Recurring signals require at least 2 occurrences in the week.
+- Single isolated errors remain records but are not promoted into stable problems.
+- Validate Math 2 sessions and English 2 sessions for the week.
+- Do not create balance/carryover fields or language.
 
 ## Output
-- Create one self-contained parent-facing HTML file.
-- Start from `assets/template-reference.html` as the locked base template.
-- Preserve the approved structure, CSS language, visual shell and section order unless the user explicitly asks to redesign the template.
-- Replace all mock/sample content with current student data.
-- Expand repeated rows/cards as needed, but do not invent a new page style.
-- If the style drifts, regenerate from the bundled template instead of improvising a new layout.
-- Keep the output readable on desktop and mobile.
-- Return the generated HTML as the primary deliverable.
-
-## Fixed institutional visual design
-- The bundled HTML template is the production design, not a loose reference.
-- ALWAYS clone `assets/template-reference.html` first with `python scripts/clone_template.py assets/template-reference.html <output.html>`.
-- Do not create HTML from a blank file and do not redesign cards, colors, spacing, fonts, header, navigation, section order or responsive behavior.
-- Preserve the template `<style>` and `<script>` blocks byte-for-byte.
-- Read `references/visual-contract.md` before editing the cloned file.
-- Before delivery, run `python scripts/validate_visual.py assets/template-reference.html <output.html>` and fix any failure.
-
-## Wrong-question evidence reuse
-- Use wrong-question evidence and labels already contained in the daily reports.
-- Do not rescan raw worksheets or the standalone wrong-question library.
-- Do not re-crop original homework/test pages for weekly or monthly reports.
-
-
-## Enforcement helpers
-- Use `scripts/clone_template.py` to start from the institutional HTML template instead of rebuilding the page manually.
-- Preserve the template’s `<style>` block, `<script>` block and section-id order.
-- Run `scripts/validate_visual.py` before final delivery. If the validator fails, correct the HTML until it passes.
+- The template is a clean visual shell with placeholders only. It contains no demo student data.
+- The model must not manually rewrite the HTML. The renderer fills the shell from validated JSON.
+- Return one parent-facing self-contained HTML as the primary deliverable; evidence images are embedded by the renderer.

@@ -1,19 +1,38 @@
-# Daily Data Schema v1.5
+# Daily Data Schema v1.7
 
 The AI reasoning stage must output a small JSON data file. Do not write or manipulate base64 image strings. The renderer reads image paths and embeds the bytes into the final self-contained HTML.
 
 ```json
 {
-  "report_version": "1.5",
+  "report_version": "1.7",
   "report_type": "l2",
   "student_name": "Alex",
   "grade": "G5",
-  "date_display": "2026年9月3日 星期四",
+  "date_display": "2026年9月4日 星期五",
   "route": {"label": "转轨中", "note": "当前：传统课程体系｜目标：国际学校路线"},
   "timing": {"arrival": "16:12", "departure": "19:28", "effective": "2h31min"},
   "counts": {"wrong_questions": 2, "dictation_errors": 1},
   "tasks": [
-    {"status":"done","subject":"Math","task":"Homework P16 T1-T10","result_kind":"scored","result_text":"8 / 10（80%）","note":"全部完成；2题错误，已订正。","long_cycle":false}
+    {
+      "status":"done",
+      "subject":"Math",
+      "task":"Homework P16 T1-T10",
+      "due_date":"2026-09-04",
+      "result_kind":"scored",
+      "result_text":"8 / 10（80%）",
+      "note":"全部完成；2题错误，已订正。",
+      "long_cycle":false
+    },
+    {
+      "status":"in_progress",
+      "subject":"Science",
+      "task":"Research Project",
+      "due_date":"2026-09-10",
+      "result_kind":"na",
+      "result_text":"阶段任务",
+      "note":"今日完成资料搜集与Outline。",
+      "long_cycle":true
+    }
   ],
   "wrong_questions": [
     {"title":"Math｜Q3","source":"Homework 1｜Q3","image_path":"crops/math-q3.png","answered":true,"corrected":true}
@@ -32,6 +51,13 @@ For L3, set `report_type: l3`, add `counts.tutoring_sessions`, add `question_typ
   {"title":"Math｜今日无专项辅导","completed":false,"feedback":"本周按排期在其他服务日完成。"}
 ]
 ```
+
+## Task deadline rule
+- Every `tasks[]` item must include the key `due_date`.
+- Use ISO `YYYY-MM-DD` when the deadline is known. Use `null` only when the deadline is genuinely unknown after the available materials/one follow-up.
+- For a clearly same-day homework/task with no different deadline stated, use the report date.
+- For long-cycle/staged tasks, preserve the actual stated deadline; never silently replace it with the report date.
+- If the latest prior daily contains the same unfinished long-cycle task, its confirmed deadline may carry forward until completion or an explicit deadline change.
 
 ## Image rule
 - `image_path` is a filesystem path or relative path to the existing crop.

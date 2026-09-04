@@ -26,3 +26,8 @@ Must never be inherited as today's fact without same-day confirmation:
 - today's focused tutoring
 
 The prior report may tell you what still needs follow-up; it may not tell you what happened today.
+
+## Deadline continuity
+- For the same unfinished long-cycle/staged task, carry forward its latest confirmed deadline from the single prior daily until completion or an explicit deadline change.
+- Do not reuse a prior deadline for a new task merely because the subject/title is similar.
+- Same-day homework may use the report date only when it is clearly a task due that day. Long-cycle deadlines must be evidence-based; if genuinely unknown, use “未明确”.

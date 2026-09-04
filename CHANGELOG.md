@@ -1,5 +1,23 @@
 # Changelog
 
+## v1.7 — 2026-09-04
+- L2/L3 daily task checklist adds a required **截止日期** column.
+- Same-day homework may use the report date when clearly due that day; long-cycle tasks preserve their actual DDL.
+- Latest confirmed DDL for an unfinished long-cycle task may carry forward from the single prior daily report.
+- L2/L3 weekly data now inherits task deadlines from daily JSON.
+- Weekly reports add a shared **持续任务与截止日期** section; unresolved week-end tasks are marked for next-week continuation and overdue tasks are labeled explicitly.
+- L3 weekly now visibly inherits this L2 base section as well.
+
+## v1.6 — 2026-09-04
+- L2周报、L3周报、L3月报全面升级为与日报/批改一致的数据驱动架构。
+- 周报新增 `weekly-data-schema.md`、`aggregate_weekly_data.py`、`validate_weekly_data.py`、`render_weekly.py`；AI不再直接编辑成品HTML。
+- 月报新增 `monthly-data-schema.md`、`aggregate_monthly_data.py`、`validate_monthly_data.py`、`render_monthly.py`。
+- 周报优先读取目标周 `daily-data.json`；月报优先读取目标月 `daily-data.json`，上月环比优先读取 `monthly-data.json`；HTML仅作兼容回退。
+- L3周报强制 `recurring_signals[].occurrence >= 2`，并继续校验 Math 2/2、English 2/2。
+- L3月报强制能力地图重复阈值、月测状态显式化、专项辅导 `service_weeks × 2` 统计自洽。
+- L2/L3周报和L3月报模板彻底清除所有demo文本与示例图片：周报模板约262–264KB降至约8KB，月报约20KB降至约8KB。
+- 周/月HTML只由固定renderer生成，视觉validator继续校验CSS/JS与section顺序，并额外拦截明显demo残留。
+
 ## v1.5 — 2026-09-03
 - 批改Skill输出改为三件套：`grading-data.json + crops/ + grading-report.html`；HTML仍完整嵌图，但JSON只存轻量文字和图片路径。
 - L2/L3日报正常运行时禁止解析重型批改HTML；优先读取 `grading-data.json`，仅复用被引用的错题图片路径。

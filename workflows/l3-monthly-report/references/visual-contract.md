@@ -1,25 +1,17 @@
-# Visual contract: fixed institutional design
+# Visual contract v1.6
 
-The bundled HTML asset is not a loose design example. It is the institution's fixed parent-facing template.
+The institutional template is a clean visual shell, not a demo report.
 
-## Mandatory rules
-- ALWAYS start from `assets/template-reference.html`. Never write the report HTML from a blank file.
-- Preserve the complete `<style>...</style>` block byte-for-byte.
-- Preserve the complete `<script>...</script>` block byte-for-byte.
-- Preserve the existing header, sticky navigation, section order, card types, spacing system, typography, colors, borders, radii and responsive rules.
-- Preserve existing class names. Do not invent a new design system or substitute a different dashboard/card layout.
-- Only replace data-bearing text, table rows, status tags, evidence images and other content slots required by current student data.
-- If a section has no current data, keep the institutional structure and use the report-specific missing-data rule; do not redesign the section.
-- Do not add decorative gradients, icons, charts, fixed-height image frames, masonry layouts, new card shells, or alternate fonts.
+## Required
+- Preserve the bundled `<style>` and `<script>` blocks byte-for-byte.
+- Preserve the fixed section order for this report type.
+- Do not hand-edit the final HTML. Generate it only through the bundled renderer from validated JSON.
+- Repeated rows/cards may expand only through renderer loops.
+- Evidence images, when used, must preserve natural aspect ratio; never crop them again with CSS.
+- Final HTML may embed image bytes so the family receives a self-contained file. Base64 must be introduced only by the renderer, never stored in weekly/monthly JSON.
 
-## Image display contract
-- Evidence images must render with `width:100%` and automatic height.
-- Never use `height:<fixed value>`, `max-height`, `object-fit:cover`, or a clipping wrapper for wrong-question evidence.
-- Never crop an image visually through CSS. Crop only by producing a separate validated image file.
-
-## Required pre-delivery validation
-After generating the report, run:
-
-`python scripts/validate_visual.py assets/template-reference.html <generated.html>`
-
-Do not deliver the file unless the validator prints `PASS`.
+## Forbidden
+- Reintroducing demo/sample student text into the template.
+- Adding alternate styles, new color systems, or custom layout variants.
+- `object-fit: cover`, image `max-height`, or overflow-based evidence cropping outside the locked style.
+- Direct LLM rewriting of the full HTML.

@@ -10,11 +10,11 @@ Generate a parent-facing L2 daily dashboard through a controlled intake workflow
 ## Workflow
 1. Read `references/source-of-truth.md`, `references/interaction.md`, `references/output-rules.md`, `references/student-context.md`, `references/file-access-scope.md`, `references/visual-contract.md`, and `references/cropping.md`.
 2. Resolve stable profile fields from the current student's bound documents.
-3. Read only the single most recent prior daily report before the target date and extract unfinished long-cycle/ongoing tasks for continuity. Do not inherit prior daily facts.
+3. Read only the single most recent prior daily report before the target date and extract unfinished long-cycle/ongoing tasks **and their latest confirmed deadlines** for continuity. Do not inherit unrelated prior daily facts.
 4. Check whether today already has a standardized homework-grading `grading-data.json` package supplied or explicitly pointed to by the supervisor. For every assignment covered by such a report, treat it as the preferred source for total/correct/wrong/accuracy, wrong-question IDs and referenced per-question crop paths. Do **not** re-grade, re-analyze or re-crop covered homework. L2 ignores analytical fields such as question type/ability/error cause even if they are present in the grading report.
 5. For today's materials **not covered** by a standardized grading report, use the raw homework/test files or supervisor-provided grading result. The grading result may come from text, screenshot, file, pasted output from another AI, or current conversation; do not assume its location. If no grading result exists and the supervisor asks this AI to grade, grade only the explicitly identified current-day materials.
 6. If critical inputs are incomplete, send the one-round intake prompt from `references/interaction.md`.
-7. Parse supplied facts and build the task checklist and wrong-question index. For covered homework, reuse the wrong-question crop paths referenced in grading-data.json.
+7. Parse supplied facts and build the task checklist with a deadline for every task, plus the wrong-question index. For covered homework, reuse the wrong-question crop paths referenced in grading-data.json.
 8. For every confirmed wrong item **not already carrying a referenced crop from a grading report**, and whose source is a full worksheet/page, mandatory: create a per-question evidence crop following `references/cropping.md`.
 9. Run completeness checks. If status is RED, ask one targeted follow-up containing all blocking gaps.
 10. Generate one self-contained HTML file through the locked renderer; do not hand-edit the full HTML.
@@ -37,6 +37,7 @@ Generate a parent-facing L2 daily dashboard through a controlled intake workflow
 - Describe learning habits with observable behavior, not vague praise.
 - Never use cross-conversation memory as report facts.
 - Apply Fresh-State to all date-specific facts while preserving continuity only for unfinished long-cycle tasks from the single latest prior daily report.
+- **Deadline rule:** every task must carry `due_date`. Clear same-day homework may default to the report date; active long-cycle/staged tasks must preserve their actual confirmed DDL from the source/prior daily. If still unknown after one material follow-up, show “未明确” rather than inventing a date.
 - Do not recursively scan weekly/monthly/history/wrong-question folders. Follow `references/file-access-scope.md`.
 - A standardized grading report with referenced crops is authoritative for covered homework: never re-grade, re-analyze or re-crop it in L2 daily generation.
 - Per-question cropping remains mandatory for uncovered full-page materials such as dictation, ad-hoc tests or assignments without a grading report. Whole-page evidence is exception-only after conservative crop failure.
